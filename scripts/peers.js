@@ -30,7 +30,7 @@ module.exports = class Peers extends Eventable {
     data = JSON.stringify(data);
     Object.keys(this.peers).forEach(function(key) {
       let channel = this.peers[key].channel;
-      if (channel.readyState === 'open') {
+      if (channel && channel.readyState === 'open') {
         channel.send(data);
       }
     }, this);

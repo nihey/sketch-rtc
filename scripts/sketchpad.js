@@ -6,6 +6,8 @@ module.exports = class Sketchpad extends Eventable {
     this.canvas = options.canvas;
     this.context = this.canvas.getContext('2d');
 
+    this.sketching = false;
+
     this.brush = {
       color: options.color || '#000',
       size: options.brushSize || 5,
@@ -47,10 +49,14 @@ module.exports = class Sketchpad extends Eventable {
   onMouseDown(event) {
     this._lastCursor = this.cursor(event);
     this.canvas.addEventListener('mousemove', this.onMouseMove);
+    this.sketching = true;
+    this.trigger('sketching', [true]);
   }
 
   onMouseUp(event) {
     this.canvas.removeEventListener('mousemove', this.onMouseMove);
+    this.sketching = false;
+    this.trigger('sketching', [false]);
   }
 
   onMouseMove(event) {
@@ -67,10 +73,12 @@ module.exports = class Sketchpad extends Eventable {
   onTouchDown(event) {
     this._lastCursor = this.cursor(event.changedTouches[0]);
     this.canvas.addEventListener('touchmove', this.onTouchMove);
+    this.sketching = true;
   }
 
   onTouchUp(event) {
     this.canvas.removeEventListener('touchmove', this.onTouchMove);
+    this.sketching = false;
   }
 
   onTouchMove(event) {
