@@ -10,16 +10,30 @@ var socket = io(Environment.SIGNALLER);
 var peers = new Peers({signaller: socket});
 
 /*
+ * Sketchpad events
+ */
+
+sketchpad.on('stroke', function(args) {
+  peers.send({
+    type: 'method',
+    method: 'stroke',
+    args,
+  });
+});
+
+/*
  * WebRTC Events
  */
 
 peers.on('connect', function(id) {
   console.info('connected to peer', id);
-  peers.send('hon-colino-cocola');
 });
 
 peers.on('data', function(id, data) {
-  console.log('received', data, 'from', id);
+  if (data.type === 'method') {
+    data.args = data.args || []
+    sketchpad[data.method](...data.args);
+  }
 });
 
 peers.on('disconnect', function(id) {

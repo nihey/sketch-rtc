@@ -1,5 +1,8 @@
-module.exports = class Sketchpad {
+import Eventable from 'eventable';
+
+module.exports = class Sketchpad extends Eventable {
   constructor(options={}) {
+    super();
     this.canvas = options.canvas;
     this.context = this.canvas.getContext('2d');
 
@@ -115,5 +118,6 @@ module.exports = class Sketchpad {
    */
   draw(start, end, color, size) {
     this.stroke(start, end, color, size, 'source-over');
+    this.trigger('stroke', [[start, end, color, size, 'source-over']]);
   }
 };

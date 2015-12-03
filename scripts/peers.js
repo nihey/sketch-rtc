@@ -27,6 +27,7 @@ module.exports = class Peers extends Eventable {
   }
 
   send(data) {
+    data = JSON.stringify(data);
     Object.keys(this.peers).forEach(function(key) {
       let channel = this.peers[key].channel;
       if (channel.readyState === 'open') {
@@ -51,7 +52,7 @@ module.exports = class Peers extends Eventable {
   }
 
   onData(id, event) {
-    this.trigger('data', [id, event.data]);
+    this.trigger('data', [id, JSON.parse(event.data)]);
   }
 
   onClose(id) {
